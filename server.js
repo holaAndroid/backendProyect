@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 const rutasUsuarios = require("./routes/rutas-usuarios");
-app.use("/api/usuarios", rutasUsuarios);
+app.use("/usuarios", rutasUsuarios);
 
 const rutasPeliculas = require("./routes/rutas-peliculas");
 app.use("/peliculas", rutasPeliculas);
