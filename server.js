@@ -18,7 +18,7 @@ const rutasUsuarios = require("./routes/rutas-usuarios");
 app.use("/api/usuarios", rutasUsuarios);
 
 const rutasPeliculas = require("./routes/rutas-peliculas");
-app.use("/api/peliculas", rutasPeliculas);
+app.use("/peliculas", rutasPeliculas);
 
 app.use((req, res) => {
   // Middleware que se ejecuta cuando el servidor no tiene la ruta que se ha enviado desde el cliente
