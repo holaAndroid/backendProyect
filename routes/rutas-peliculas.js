@@ -130,7 +130,7 @@ router.delete("/:id", async (req, res, next) => {
     mostrarPeliculaEliminada: eliminarPelicula,
   });
 });
-router.get("/buscar/:busca", async (req, res, next) => {
+router.get("/buscar", async (req, res, next) => {
   const search = req.params.busca;
   let peliculas;
   try {
