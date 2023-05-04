@@ -130,5 +130,21 @@ router.delete("/:id", async (req, res, next) => {
     mostrarPeliculaEliminada: eliminarPelicula,
   });
 });
+router.get("/buscar/:busca", async (req, res, next) => {
+  const search = req.params.busca;
+  let peliculas;
+  try {
+    peliculas = await Pelicula.find({
+      nombre: { $regex: search, $options: "i" },
+    });
+  } catch (err) {
+    const error = new Error("Ha ocurrido un error en la recuperación de datos");
+    error.code = 500;
+    return next(error);
+  }
+  res
+    .status(200)
+    .json({ mensaje: "Peliculas encontrados", peliculas: peliculas });
+});
 
 module.exports = router;
