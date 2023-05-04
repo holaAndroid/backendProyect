@@ -15,10 +15,10 @@ app.use(cors());
 app.use(express.json());
 
 const rutasUsuarios = require("./routes/rutas-usuarios");
-app.use("/usuarios", rutasUsuarios);
+app.use("/api/usuarios", rutasUsuarios);
 
 const rutasPeliculas = require("./routes/rutas-peliculas");
-app.use("/peliculas", rutasPeliculas);
+app.use("/api/peliculas", rutasPeliculas);
 
 app.use((req, res) => {
   // Middleware que se ejecuta cuando el servidor no tiene la ruta que se ha enviado desde el cliente
