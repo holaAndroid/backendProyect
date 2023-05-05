@@ -5,7 +5,71 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const Usuario = require("../models/modelo-usuario");
+
 const checkAuth = require("../middleware/check-auth");
+
+router.post("/login", async (req, res, next) => {
+  const { email, password } = req.body;
+  let usuarioExiste;
+  try {
+    usuarioExiste = await Usuario.findOne({
+      // ? (1) Comprobación de email
+      email: email,
+    });
+  } catch (error) {
+    const err = new Error(
+      "No se ha podido realizar la operación. Pruebe más tarde"
+    );
+    err.code = 500;
+    return next(err);
+  }
+  // ? ¿Qué pasa si el usuario no existe?
+  if (!usuarioExiste) {
+    const error = new Error(
+      "No se ha podido identificar al usuario. Credenciales erróneos 2"
+    );
+    error.code = 422; // ! 422: Datos de usuario inválidos
+    return next(error);
+  }
+  // ? Si existe el usuario, ahora toca comprobar las contraseñas.
+  let esValidoElPassword = false;
+  esValidoElPassword = bcrypt.compareSync(password, usuarioExiste.password);
+  if (!esValidoElPassword) {
+    const error = new Error(
+      "No se ha podido identificar al usuario. Credenciales erróneos"
+    );
+    error.code = 401; // !401: Fallo de autenticación
+    return next(error);
+  }
+  // ? Usuario con los credeciales correctos.
+  // ? Creamos ahora el token
+  // ! CREACIÓN DEL TOKEN
+  let token;
+  try {
+    token = jwt.sign(
+      {
+        userId: usuarioExiste.id,
+        email: usuarioExiste.email,
+      },
+      "clave_supermegasecreta",
+      {
+        expiresIn: "1h",
+      }
+    );
+  } catch (error) {
+    const err = new Error("El proceso de login ha fallado");
+    err.code = 500;
+    return next(err);
+  }
+  res.status(201).json({
+    mensaje: "Usuario ha entrado con éxito en el sistema",
+    userId: usuarioExiste.id,
+    email: usuarioExiste.email,
+    token: token,
+  });
+});
+router.use(checkAuth)
+
 router.get("/", async (req, res, next) => {
   let usuarios;
   try {
@@ -155,68 +219,6 @@ router.delete("/:id", async (req, res, next) => {
   res.json({
     mensaje: "Usuario eliminado",
     usuario: usuario,
-  });
-});
-
-// * Login de usuario
-router.post("/login", async (req, res, next) => {
-  const { email, password } = req.body;
-  let usuarioExiste;
-  try {
-    usuarioExiste = await Usuario.findOne({
-      // ? (1) Comprobación de email
-      email: email,
-    });
-  } catch (error) {
-    const err = new Error(
-      "No se ha podido realizar la operación. Pruebe más tarde"
-    );
-    err.code = 500;
-    return next(err);
-  }
-  // ? ¿Qué pasa si el usuario no existe?
-  if (!usuarioExiste) {
-    const error = new Error(
-      "No se ha podido identificar al usuario. Credenciales erróneos 2"
-    );
-    error.code = 422; // ! 422: Datos de usuario inválidos
-    return next(error);
-  }
-  // ? Si existe el usuario, ahora toca comprobar las contraseñas.
-  let esValidoElPassword = false;
-  esValidoElPassword = bcrypt.compareSync(password, usuarioExiste.password);
-  if (!esValidoElPassword) {
-    const error = new Error(
-      "No se ha podido identificar al usuario. Credenciales erróneos"
-    );
-    error.code = 401; // !401: Fallo de autenticación
-    return next(error);
-  }
-  // ? Usuario con los credeciales correctos.
-  // ? Creamos ahora el token
-  // ! CREACIÓN DEL TOKEN
-  let token;
-  try {
-    token = jwt.sign(
-      {
-        userId: usuarioExiste.id,
-        email: usuarioExiste.email,
-      },
-      "clave_supermegasecreta",
-      {
-        expiresIn: "1h",
-      }
-    );
-  } catch (error) {
-    const err = new Error("El proceso de login ha fallado");
-    err.code = 500;
-    return next(err);
-  }
-  res.status(201).json({
-    mensaje: "Usuario ha entrado con éxito en el sistema",
-    userId: usuarioExiste.id,
-    email: usuarioExiste.email,
-    token: token,
   });
 });
 
