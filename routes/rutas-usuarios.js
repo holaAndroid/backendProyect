@@ -68,48 +68,6 @@ router.post("/login", async (req, res, next) => {
     token: token,
   });
 });
-router.use(checkAuth)
-
-router.get("/", async (req, res, next) => {
-  let usuarios;
-  try {
-    usuarios = await Usuario.find({}, "-password");
-  } catch (err) {
-    const error = new Error("Ha ocurrido un error en la recuperación de datos");
-    error.code = 500;
-    return next(error);
-  }
-  res.status(200).json({
-    mensaje: "Todos los usuarios",
-    usuarios: usuarios,
-  });
-});
-
-router.get("/:id", async (req, res, next) => {
-  const idUsuario = req.params.id;
-  let usuario;
-  try {
-    usuario = await Usuario.findById(idUsuario);
-  } catch (err) {
-    const error = new Error(
-      "Ha habido algún error. No se han podido recuperar los datos"
-    );
-    error.code = 500;
-    return next(error);
-  }
-  if (!usuario) {
-    const error = new Error(
-      "No se ha podido encontrar un usuario con el id proporcionado"
-    );
-    error.code = 404;
-    return next(error);
-  }
-  res.json({
-    mensaje: "Usuario encontrado",
-    usuario: usuario,
-  });
-});
-
 router.post("/", async (req, res, next) => {
   const { nombre, email, password, peliculas } = req.body;
   let existeUsuario;
@@ -178,6 +136,48 @@ router.post("/", async (req, res, next) => {
 
 // res.status(201).json({
 //   usuario: nuevoUsuario,
+
+router.use(checkAuth)
+
+router.get("/", async (req, res, next) => {
+  let usuarios;
+  try {
+    usuarios = await Usuario.find({}, "-password");
+  } catch (err) {
+    const error = new Error("Ha ocurrido un error en la recuperación de datos");
+    error.code = 500;
+    return next(error);
+  }
+  res.status(200).json({
+    mensaje: "Todos los usuarios",
+    usuarios: usuarios,
+  });
+});
+
+router.get("/:id", async (req, res, next) => {
+  const idUsuario = req.params.id;
+  let usuario;
+  try {
+    usuario = await Usuario.findById(idUsuario);
+  } catch (err) {
+    const error = new Error(
+      "Ha habido algún error. No se han podido recuperar los datos"
+    );
+    error.code = 500;
+    return next(error);
+  }
+  if (!usuario) {
+    const error = new Error(
+      "No se ha podido encontrar un usuario con el id proporcionado"
+    );
+    error.code = 404;
+    return next(error);
+  }
+  res.json({
+    mensaje: "Usuario encontrado",
+    usuario: usuario,
+  });
+});
 
 router.patch("/:id", async (req, res, next) => {
   const idUsuario = req.params.id;
