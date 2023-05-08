@@ -4,9 +4,14 @@ const express = require("express");
 const router = express.Router();
 const Pelicula = require("../models/modelo-pelicula");
 const Usuario = require("../models/modelo-usuario");
-// const checkAuth = require("../middleware/check-auth"); // (1) Importamos middleware de autorización
-// router.use(checkAuth)
-router.get("/", async (req, res, next) => {
+const checkAuth = require("../middleware/check-auth"); // (1) Importamos middleware de autorización
+
+
+const autorizacion = require("../middleware/check-auth");
+
+router.use(checkAuth)
+
+router.get("/", autorizacion, async (req, res, next) => {
   let peliculas;
   try {
     peliculas = await Pelicula.find({});
@@ -23,7 +28,7 @@ router.get("/", async (req, res, next) => {
 });
 
 //* Recuperar películas por id
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", autorizacion, async (req, res, next) => {
   const idPeliculas = req.params.id;
   let pelicula;
   try {
@@ -47,7 +52,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //* Crear nueva pelicula
-router.post("/", async (req, res, next) => {
+router.post("/", autorizacion, async (req, res, next) => {
   const { nombre, anyo, duration, genero } = req.body;
   let compruebaPelicula;
 
@@ -88,7 +93,7 @@ router.post("/", async (req, res, next) => {
 });
 
 // * Modificar una pelicula
-router.patch("/:id", async (req, res, next) => {
+router.patch("/:id", autorizacion, async (req, res, next) => {
   const idPelicula = req.params.id;
   const camposPorCambiar = req.body;
   let peliculaBuscar;
@@ -114,7 +119,7 @@ router.patch("/:id", async (req, res, next) => {
   });
 });
 // * Eliminar una pelicula por su id
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", autorizacion, async (req, res, next) => {
   let eliminarPelicula;
   try {
     eliminarPelicula = await Pelicula.findByIdAndDelete(req.params.id);
