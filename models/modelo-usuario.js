@@ -21,7 +21,7 @@ const usuarioSchema = new mongoose.Schema({
   peliculas: [
     {
       type: mongoose.Types.ObjectId,
-      ref: "peliculas",
+      ref: "alquiler",
     },
   ],
 });
