@@ -11,7 +11,7 @@ const autorizacion = require("../middleware/check-auth");
 
 router.use(checkAuth)
 
-router.get("/", autorizacion, async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   let peliculas;
   try {
     peliculas = await Pelicula.find({});
