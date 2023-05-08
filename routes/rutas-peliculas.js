@@ -4,8 +4,8 @@ const express = require("express");
 const router = express.Router();
 const Pelicula = require("../models/modelo-pelicula");
 const Usuario = require("../models/modelo-usuario");
-// const checkAuth = require("../middleware/check-auth"); // (1) Importamos middleware de autorización
-// router.use(checkAuth)
+const checkAuth = require("../middleware/check-auth"); // (1) Importamos middleware de autorización
+router.use(checkAuth)
 router.get("/", async (req, res, next) => {
   let peliculas;
   try {
