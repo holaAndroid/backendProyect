@@ -178,6 +178,7 @@ router.get("/:id", async (req, res, next) => {
     usuario: usuario,
   });
 });
+router.use(checkAuth)
 
 router.patch("/:id", async (req, res, next) => {
   const idUsuario = req.params.id;
