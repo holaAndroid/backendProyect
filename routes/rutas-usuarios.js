@@ -137,7 +137,6 @@ router.post("/", async (req, res, next) => {
 // res.status(201).json({
 //   usuario: nuevoUsuario,
 
-router.use(checkAuth)
 
 router.get("/", async (req, res, next) => {
   let usuarios;
