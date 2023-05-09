@@ -6,10 +6,7 @@ const Pelicula = require("../models/modelo-pelicula");
 const Usuario = require("../models/modelo-usuario");
 const checkAuth = require("../middleware/check-auth"); // (1) Importamos middleware de autorización
 
-
 const autorizacion = require("../middleware/check-auth");
-
-router.use(checkAuth)
 
 router.get("/", async (req, res, next) => {
   let peliculas;
@@ -50,7 +47,7 @@ router.get("/:id", autorizacion, async (req, res, next) => {
     pelicula: pelicula,
   });
 });
-
+router.use(checkAuth)
 //* Crear nueva pelicula
 router.post("/", autorizacion, async (req, res, next) => {
   const { nombre, anyo, duration, genero } = req.body;
